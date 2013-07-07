@@ -7,7 +7,9 @@ semant
 test.cl
 t
 Makefile
-/mycoolc
-/out
-/pa1-grading.pl
-/README
+mycoolc
+out
+pa1-grading.pl
+README
+examples/
+*.pdf

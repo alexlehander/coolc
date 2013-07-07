@@ -72,7 +72,7 @@ import java_cup.runtime.Symbol;
 
 %class CoolLexer
 %cup
-%state YYCOMMENT,YYSTRING,YYSTRING_NEWLINE_ERR, YYSTRING_NULL_ERR
+%state YYCOMMENT,YYSTRING,YYSTRING_NEWLINE_ERR,YYSTRING_NULL_ERR
 
 DIGIT        = [0-9]
 WHITESPACE   = [ \t\v\r\f]
@@ -104,8 +104,8 @@ OF           = [Oo][Ff]
 NOT          = [Nn][Oo][Tt]
 TRUE         = t[Rr][Uu][Ee]
 FALSE        = f[Aa][Ll][Ss][Ee]
+AT           = @
 ANYCHAR      = .
-
 %%
 
 <YYINITIAL>{STARTCOMMENT}                  { yybegin(YYCOMMENT); }
@@ -131,8 +131,8 @@ ANYCHAR      = .
 <YYINITIAL>{OF}                            { return new Symbol(TokenConstants.OF); }
 <YYINITIAL>{NOT}                           { return new Symbol(TokenConstants.NOT); }
 <YYINITIAL>{CLASS}                         { return new Symbol(TokenConstants.CLASS); }
-<YYINITIAL>{TRUE}                          { return new Symbol(TokenConstants.BOOL_CONST, new BoolConst(true)); }
-<YYINITIAL>{FALSE}                         { return new Symbol(TokenConstants.BOOL_CONST, new BoolConst(false)); }
+<YYINITIAL>{TRUE}                          { return new Symbol(TokenConstants.BOOL_CONST, "true"); }
+<YYINITIAL>{FALSE}                         { return new Symbol(TokenConstants.BOOL_CONST, "false"); }
 
 <YYINITIAL>\*                              { return new Symbol(TokenConstants.MULT); }
 <YYINITIAL>\.                              { return new Symbol(TokenConstants.DOT); }
@@ -141,6 +141,7 @@ ANYCHAR      = .
 <YYINITIAL>\+                              { return new Symbol(TokenConstants.PLUS); }
 
 <YYINITIAL>-                               { return new Symbol(TokenConstants.MINUS); }
+<YYINITIAL>~                               { return new Symbol(TokenConstants.NEG); }
 <YYINITIAL>\(                              { return new Symbol(TokenConstants.LPAREN); }
 <YYINITIAL>\)                              { return new Symbol(TokenConstants.RPAREN); }
 <YYINITIAL>\<                              { return new Symbol(TokenConstants.LT); }
@@ -151,6 +152,7 @@ ANYCHAR      = .
 <YYINITIAL>\:                              { return new Symbol(TokenConstants.COLON); }
 <YYINITIAL>\{                              { return new Symbol(TokenConstants.LBRACE); }
 <YYINITIAL>\}                              { return new Symbol(TokenConstants.RBRACE); }
+<YYINITIAL>@                               { return new Symbol(TokenConstants.AT); }
 
 <YYINITIAL>{TYPEID}                        { return new Symbol(TokenConstants.TYPEID,
                                                  new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
@@ -169,8 +171,11 @@ ANYCHAR      = .
 <YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL); }
 \n                                        { curr_lineno++; }
 
-{DIGIT}+                                  { return new Symbol(TokenConstants.INT_CONST,
+<YYINITIAL>{DIGIT}+                                  { return new Symbol(TokenConstants.INT_CONST,
                                                new IntSymbol(yytext(), yytext().length(), Integer.parseInt(yytext()))); }
 <YYINITIAL>"=>"                           { return new Symbol(TokenConstants.DARROW); }
+
+
+<YYINITIAL>error                          { return new Symbol(TokenConstants.error); }
 
 .                                         { return new Symbol(TokenConstants.ERROR, yytext()); }
