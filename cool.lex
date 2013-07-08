@@ -78,10 +78,10 @@ DIGIT        = [0-9]
 WHITESPACE   = [ \t\v\r\f]
 NEWLINE      = \n
 LINECOMMENT  = --[^\n]*
-STARTCOMMENT = \(\*
-ENDCOMMENT   = \*\)
+COMMENTBEGIN = \(\*
+COMMENTEND   = \*\)
 STRINGBEGIN  = \"
-STRINGCHARS  = [^\"\0]*
+STRINGCHARS  = [^\"\0\n\t\b\f\\]+
 STRINGEND    = \"
 TYPEID       = [A-Z][A-z0-9_]*
 OBJECTID     = [a-z][A-z0-9_]*
@@ -106,11 +106,13 @@ TRUE         = t[Rr][Uu][Ee]
 FALSE        = f[Aa][Ll][Ss][Ee]
 AT           = @
 ANYCHAR      = .
+ESCAPED      =(\\\\n)|\[tfb]
+
 %%
 
-<YYINITIAL>{STARTCOMMENT}                  { yybegin(YYCOMMENT); }
-<YYCOMMENT>{ENDCOMMENT}                    { yybegin(YYINITIAL); }
-<YYINITIAL>{ENDCOMMENT}                    { System.err.println("Unmatched *)"); }
+<YYINITIAL>{COMMENTBEGIN}                  { yybegin(YYCOMMENT); }
+<YYCOMMENT>{COMMENTEND}                    { yybegin(YYINITIAL); }
+<YYINITIAL>{COMMENTEND}                    { System.err.println("Unmatched *)"); }
 <YYCOMMENT>{ANYCHAR}                       { ; }
 <YYINITIAL>{WHITESPACE}                    { ; }
 <YYINITIAL>{LINECOMMENT}                   { ; }
@@ -159,19 +161,24 @@ ANYCHAR      = .
 <YYINITIAL>{OBJECTID}                      { return new Symbol(TokenConstants.OBJECTID,
                                                  new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
 
-<YYINITIAL>{STRINGBEGIN}                  { yybegin(YYSTRING); }
+<YYINITIAL>{STRINGBEGIN}                  { string_buf.setLength(0); yybegin(YYSTRING); }
 <YYSTRING>\n                              { System.err.println("Unterminated string constant");
-                                            yybegin(YYSTRING_NEWLINE_ERR); }
-<YYSTRING>\0                              { System.err.println("String contains null character");
-                                            yybegin(YYSTRING_NULL_ERR); }
-<YYSTRING_NEWLINE_ERR>\n                  { yybegin(YYINITIAL); curr_lineno++;}
+                                               yybegin(YYSTRING_NEWLINE_ERR); }
+<YYSTRING>\0                                      { System.err.println("String contains null character");
+                                              yybegin(YYSTRING_NULL_ERR); }
+<YYSTRING>{STRINGCHARS}                           { string_buf.append(yytext()); }
+<YYSTRING>\\t                                     { string_buf.append('\t'); }
+<YYSTRING>\\n                                     { string_buf.append('\n'); }
+<YYSTRING>\\\"                                    { string_buf.append('\"'); }
+<YYSTRING>\\                                      { string_buf.append('\\'); }
+<YYSTRING>{STRINGEND}                             { yybegin(YYINITIAL);
+                                                       return new Symbol(TokenConstants.STR_CONST,
+                                                           new StringSymbol(string_buf.toString(), string_buf.length(), stringIndex++)); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
-<YYSTRING>{STRINGCHARS}                   { return new Symbol(TokenConstants.STR_CONST,
-                                                 new StringSymbol(yytext(), yytext().length(), stringIndex++)); }
-<YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL); }
+<YYSTRING_NEWLINE_ERR>\n                  { yybegin(YYINITIAL); curr_lineno++;}
 \n                                        { curr_lineno++; }
 
-<YYINITIAL>{DIGIT}+                                  { return new Symbol(TokenConstants.INT_CONST,
+<YYINITIAL>{DIGIT}+                       { return new Symbol(TokenConstants.INT_CONST,
                                                new IntSymbol(yytext(), yytext().length(), Integer.parseInt(yytext()))); }
 <YYINITIAL>"=>"                           { return new Symbol(TokenConstants.DARROW); }
 
