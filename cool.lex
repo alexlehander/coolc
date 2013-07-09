@@ -172,15 +172,15 @@ ANYCHAR      = .
 <YYSTRING>\\\\                            { string_buf.append("\\"); }
 <YYSTRING>\\                              { ; }
 <YYSTRING>{STRINGCHARS}                   { string_buf.append(yytext()); }
-<YYSTRING>\n                              { new Symbol(TokenConstants.ERROR, "Unterminated string constant");
-                                                yybegin(YYSTRING_NEWLINE_ERR); }
+<YYSTRING>\n                              { string_buf.setLength(0);
+                                            yybegin(YYINITIAL);
+                                            return new Symbol(TokenConstants.ERROR, "Unterminated string constant"); }
 
 <YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL);
                                                 return new Symbol(TokenConstants.STR_CONST,
                                                     new StringSymbol(string_buf.toString(), string_buf.length(), stringIndex++)); }
 <YYSTRING_NULL_ERR>.                      { yybegin(YYINITIAL); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
-<YYSTRING_NEWLINE_ERR>\n                  { yybegin(YYINITIAL); curr_lineno++;}
 \n                                        { curr_lineno++; }
 
 <YYINITIAL>{DIGIT}+                       { return new Symbol(TokenConstants.INT_CONST,
