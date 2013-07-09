@@ -106,8 +106,6 @@ TRUE         = t[Rr][Uu][Ee]
 FALSE        = f[Aa][Ll][Ss][Ee]
 AT           = @
 ANYCHAR      = .
-ESCAPED      =(\\\\n)|\[tfb]
-
 %%
 
 <YYINITIAL>{COMMENTBEGIN}                  { yybegin(YYCOMMENT); }
@@ -162,18 +160,25 @@ ESCAPED      =(\\\\n)|\[tfb]
                                                  new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
 
 <YYINITIAL>{STRINGBEGIN}                  { string_buf.setLength(0); yybegin(YYSTRING); }
-<YYSTRING>\n                              { System.err.println("Unterminated string constant");
-                                               yybegin(YYSTRING_NEWLINE_ERR); }
-<YYSTRING>\0                                      { System.err.println("String contains null character");
-                                              yybegin(YYSTRING_NULL_ERR); }
-<YYSTRING>{STRINGCHARS}                           { string_buf.append(yytext()); }
-<YYSTRING>\\t                                     { string_buf.append('\t'); }
-<YYSTRING>\\n                                     { string_buf.append('\n'); }
-<YYSTRING>\\\"                                    { string_buf.append('\"'); }
-<YYSTRING>\\                                      { string_buf.append('\\'); }
-<YYSTRING>{STRINGEND}                             { yybegin(YYINITIAL);
-                                                       return new Symbol(TokenConstants.STR_CONST,
-                                                           new StringSymbol(string_buf.toString(), string_buf.length(), stringIndex++)); }
+<YYSTRING>\x00                            { new Symbol(TokenConstants.ERROR, "String contains null character");
+                                                 yybegin(YYSTRING_NULL_ERR); }
+<YYSTRING>\\b                             { string_buf.append("\b"); }
+<YYSTRING>\\f                             { string_buf.append("\f"); }
+<YYSTRING>\\t                             { string_buf.append("\t"); }
+<YYSTRING>\\\\n                           { string_buf.append("\\n"); }
+<YYSTRING>\\n                             { string_buf.append("\n"); }
+<YYSTRING>\\\n                            { string_buf.append("\n"); }
+<YYSTRING>\\\"                            { string_buf.append("\""); }
+<YYSTRING>\\\\                            { string_buf.append("\\"); }
+<YYSTRING>\\                              { ; }
+<YYSTRING>{STRINGCHARS}                   { string_buf.append(yytext()); }
+<YYSTRING>\n                              { new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+                                                yybegin(YYSTRING_NEWLINE_ERR); }
+
+<YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL);
+                                                return new Symbol(TokenConstants.STR_CONST,
+                                                    new StringSymbol(string_buf.toString(), string_buf.length(), stringIndex++)); }
+<YYSTRING_NULL_ERR>.                      { yybegin(YYINITIAL); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
 <YYSTRING_NEWLINE_ERR>\n                  { yybegin(YYINITIAL); curr_lineno++;}
 \n                                        { curr_lineno++; }
