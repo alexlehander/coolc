@@ -162,8 +162,8 @@ ANYCHAR      = .
                                                  new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
 
 <YYINITIAL>{STRINGBEGIN}                  { string_buf.setLength(0); yybegin(YYSTRING); }
-<YYSTRING>\x00                            { new Symbol(TokenConstants.ERROR, "String contains null character");
-                                                 yybegin(YYSTRING_NULL_ERR); }
+<YYSTRING>\x00                            { yybegin(YYSTRING_NULL_ERR);
+                                            return new Symbol(TokenConstants.ERROR, "String contains null character"); }
 <YYSTRING>\\b                             { string_buf.append("\b"); }
 <YYSTRING>\\f                             { string_buf.append("\f"); }
 <YYSTRING>\\t                             { string_buf.append("\t"); }
