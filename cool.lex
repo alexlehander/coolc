@@ -110,7 +110,7 @@ ANYCHAR      = .
 
 <YYINITIAL>{COMMENTBEGIN}                  { yybegin(YYCOMMENT); }
 <YYCOMMENT>{COMMENTEND}                    { yybegin(YYINITIAL); }
-<YYINITIAL>{COMMENTEND}                    { System.err.println("Unmatched *)"); }
+<YYINITIAL>{COMMENTEND}                    { return new Symbol(TokenConstants.ERROR, "Unmatched *)"); }
 <YYCOMMENT>{ANYCHAR}                       { ; }
 <YYINITIAL>{WHITESPACE}                    { ; }
 <YYINITIAL>{LINECOMMENT}                   { ; }
