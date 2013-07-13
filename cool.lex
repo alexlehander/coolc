@@ -34,8 +34,6 @@ import java_cup.runtime.Symbol;
         return filename;
     }
 
-    int stringIndex = 0;
-    int IdIndex = 0;
 %}
 
 %init{
@@ -157,9 +155,9 @@ ANYCHAR      = .
 <YYINITIAL>@                               { return new Symbol(TokenConstants.AT); }
 
 <YYINITIAL>{TYPEID}                        { return new Symbol(TokenConstants.TYPEID,
-                                                 new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
+                                                 new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
 <YYINITIAL>{OBJECTID}                      { return new Symbol(TokenConstants.OBJECTID,
-                                                 new IdSymbol(yytext(), yytext().length(), IdIndex++)); }
+                                                 new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
 
 <YYINITIAL>{STRINGBEGIN}                  { string_buf.setLength(0); yybegin(YYSTRING); }
 <YYSTRING>\x00                            { yybegin(YYSTRING_NULL_ERR);
@@ -179,14 +177,15 @@ ANYCHAR      = .
                                             return new Symbol(TokenConstants.ERROR, "Unterminated string constant"); }
 
 <YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL);
-                                                return new Symbol(TokenConstants.STR_CONST,
-                                                    new StringSymbol(string_buf.toString(), string_buf.length(), stringIndex++)); }
+                                            String s = string_buf.toString();
+                                            return new Symbol(TokenConstants.STR_CONST,
+                                                new StringSymbol(s, s.length(), s.hashCode())); }
 <YYSTRING_NULL_ERR>.                      { yybegin(YYINITIAL); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
 \n                                        { curr_lineno++; }
 
 <YYINITIAL>{DIGIT}+                       { return new Symbol(TokenConstants.INT_CONST,
-                                               new IntSymbol(yytext(), yytext().length(), Integer.parseInt(yytext()))); }
+                                               new IntSymbol(yytext(), yytext().length(), yytext().hashCode())); }
 <YYINITIAL>"=>"                           { return new Symbol(TokenConstants.DARROW); }
 
 
