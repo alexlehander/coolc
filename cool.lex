@@ -64,7 +64,9 @@ import java_cup.runtime.Symbol;
           System.err.println("EOF in comment");
           break;
      case YYSTRING:
-          System.err.println("EOF in string constant");
+          yybegin(YYEOF_ERROR);
+          return new Symbol(TokenConstants.ERROR, "EOF in string constant");
+     case YYEOF_ERROR:
           break;
     }
     return new Symbol(TokenConstants.EOF);
@@ -72,7 +74,7 @@ import java_cup.runtime.Symbol;
 
 %class CoolLexer
 %cup
-%state YYCOMMENT,YYSTRING,YYSTRING_NEWLINE_ERR,YYSTRING_NULL_ERR
+%state YYCOMMENT,YYSTRING,YYSTRING_NEWLINE_ERR,YYSTRING_NULL_ERR,YYEOF_ERROR
 
 DIGIT        = [0-9]
 WHITESPACE   = [ \t\v\r\f]
