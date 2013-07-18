@@ -76,7 +76,7 @@ import java_cup.runtime.Symbol;
 %state YYCOMMENT,YYSTRING,YYSTRING_NEWLINE_ERR,YYSTRING_NULL_ERR,YYEOF_ERROR
 
 DIGIT        = [0-9]
-WHITESPACE   = [ \t\v\r\f]
+WHITESPACE   = [ \t\r\f\]
 NEWLINE      = \n
 LINECOMMENT  = --[^\n]*
 COMMENTBEGIN = \(\*
