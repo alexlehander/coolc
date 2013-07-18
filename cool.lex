@@ -33,6 +33,7 @@ import java_cup.runtime.Symbol;
     AbstractSymbol curr_filename() {
         return filename;
     }
+    int commentDepth = 0;
 
 %}
 
@@ -108,8 +109,8 @@ AT           = @
 ANYCHAR      = .
 %%
 
-<YYINITIAL>{COMMENTBEGIN}                  { yybegin(YYCOMMENT); }
-<YYCOMMENT>{COMMENTEND}                    { yybegin(YYINITIAL); }
+{COMMENTBEGIN}                             { yybegin(YYCOMMENT); commentDepth++;}
+<YYCOMMENT>{COMMENTEND}                    { commentDepth--; if(commentDepth == 0) { yybegin(YYINITIAL); } }
 <YYINITIAL>{COMMENTEND}                    { return new Symbol(TokenConstants.ERROR, "Unmatched *)"); }
 <YYCOMMENT>{ANYCHAR}                       { ; }
 <YYINITIAL>{WHITESPACE}                    { ; }
