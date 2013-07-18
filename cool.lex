@@ -109,7 +109,7 @@ AT           = @
 ANYCHAR      = .|\r
 %%
 
-{COMMENTBEGIN}                             { yybegin(YYCOMMENT); commentDepth++;}
+<YYCOMMENT,YYINITIAL>{COMMENTBEGIN}        { yybegin(YYCOMMENT); commentDepth++; }
 <YYCOMMENT>{COMMENTEND}                    { commentDepth--; if(commentDepth == 0) { yybegin(YYINITIAL); } }
 <YYINITIAL>{COMMENTEND}                    { return new Symbol(TokenConstants.ERROR, "Unmatched *)"); }
 <YYCOMMENT>{ANYCHAR}                       { ; }
