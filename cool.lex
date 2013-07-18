@@ -60,8 +60,8 @@ import java_cup.runtime.Symbol;
         /* nothing special to do in the initial state */
         break;
      case YYCOMMENT:
-          System.err.println("EOF in comment");
-          break;
+          yybegin(YYEOF_ERROR);
+          return new Symbol(TokenConstants.ERROR, "EOF in comment");
      case YYSTRING:
           yybegin(YYEOF_ERROR);
           return new Symbol(TokenConstants.ERROR, "EOF in string constant");
@@ -179,8 +179,12 @@ ANYCHAR      = .
 
 <YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL);
                                             String s = string_buf.toString();
-                                            return new Symbol(TokenConstants.STR_CONST,
-                                                new StringSymbol(s, s.length(), s.hashCode())); }
+                                            if(s.length() >= MAX_STR_CONST) {
+                                                  return new Symbol(TokenConstants.ERROR, "String constant too long");
+                                            } else {
+                                                  return new Symbol(TokenConstants.STR_CONST,
+                                                      new StringSymbol(s, s.length(), s.hashCode()));
+                                             } }
 <YYSTRING_NULL_ERR>.                      { yybegin(YYINITIAL); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
 \n                                        { curr_lineno++; }
