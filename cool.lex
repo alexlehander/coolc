@@ -109,92 +109,93 @@ AT           = @
 ANYCHAR      = .|\r
 %%
 
-<YYCOMMENT,YYINITIAL>{COMMENTBEGIN}        { yybegin(YYCOMMENT); commentDepth++; }
-<YYCOMMENT>{COMMENTEND}                    { commentDepth--; if(commentDepth == 0) { yybegin(YYINITIAL); } }
-<YYINITIAL>{COMMENTEND}                    { return new Symbol(TokenConstants.ERROR, "Unmatched *)"); }
-<YYCOMMENT>{ANYCHAR}                       { ; }
-<YYINITIAL>{WHITESPACE}                    { ; }
-<YYINITIAL>{LINECOMMENT}                   { ; }
-<YYINITIAL>{ELSE}                          { return new Symbol(TokenConstants.ELSE); }
-<YYINITIAL>{IF}                            { return new Symbol(TokenConstants.IF); }
-<YYINITIAL>{FI}                            { return new Symbol(TokenConstants.FI); }
-<YYINITIAL>{IN}                            { return new Symbol(TokenConstants.IN); }
-<YYINITIAL>{INHERITS}                      { return new Symbol(TokenConstants.INHERITS); }
-<YYINITIAL>{ISVOID}                        { return new Symbol(TokenConstants.ISVOID); }
-<YYINITIAL>{LET}                           { return new Symbol(TokenConstants.LET); }
-<YYINITIAL>{LOOP}                          { return new Symbol(TokenConstants.LOOP); }
-<YYINITIAL>{POOL}                          { return new Symbol(TokenConstants.POOL); }
-<YYINITIAL>{THEN}                          { return new Symbol(TokenConstants.THEN); }
-<YYINITIAL>{WHILE}                         { return new Symbol(TokenConstants.WHILE); }
-<YYINITIAL>{CASE}                          { return new Symbol(TokenConstants.CASE); }
-<YYINITIAL>{ESAC}                          { return new Symbol(TokenConstants.ESAC); }
-<YYINITIAL>{NEW}                           { return new Symbol(TokenConstants.NEW); }
-<YYINITIAL>{OF}                            { return new Symbol(TokenConstants.OF); }
-<YYINITIAL>{NOT}                           { return new Symbol(TokenConstants.NOT); }
-<YYINITIAL>{CLASS}                         { return new Symbol(TokenConstants.CLASS); }
-<YYINITIAL>{TRUE}                          { return new Symbol(TokenConstants.BOOL_CONST, "true"); }
-<YYINITIAL>{FALSE}                         { return new Symbol(TokenConstants.BOOL_CONST, "false"); }
+<YYCOMMENT,YYINITIAL>{COMMENTBEGIN}  { yybegin(YYCOMMENT); commentDepth++; }
+<YYCOMMENT>{COMMENTEND}              { commentDepth--; if(commentDepth == 0) { yybegin(YYINITIAL); } }
+<YYINITIAL>{COMMENTEND}              { return new Symbol(TokenConstants.ERROR, "Unmatched *)"); }
+<YYCOMMENT>{ANYCHAR}                 { ; }
+<YYINITIAL>{WHITESPACE}              { ; }
+<YYINITIAL>{LINECOMMENT}             { ; }
+<YYINITIAL>{ELSE}                    { return new Symbol(TokenConstants.ELSE); }
+<YYINITIAL>{IF}                      { return new Symbol(TokenConstants.IF); }
+<YYINITIAL>{FI}                      { return new Symbol(TokenConstants.FI); }
+<YYINITIAL>{IN}                      { return new Symbol(TokenConstants.IN); }
+<YYINITIAL>{INHERITS}                { return new Symbol(TokenConstants.INHERITS); }
+<YYINITIAL>{ISVOID}                  { return new Symbol(TokenConstants.ISVOID); }
+<YYINITIAL>{LET}                     { return new Symbol(TokenConstants.LET); }
+<YYINITIAL>{LOOP}                    { return new Symbol(TokenConstants.LOOP); }
+<YYINITIAL>{POOL}                    { return new Symbol(TokenConstants.POOL); }
+<YYINITIAL>{THEN}                    { return new Symbol(TokenConstants.THEN); }
+<YYINITIAL>{WHILE}                   { return new Symbol(TokenConstants.WHILE); }
+<YYINITIAL>{CASE}                    { return new Symbol(TokenConstants.CASE); }
+<YYINITIAL>{ESAC}                    { return new Symbol(TokenConstants.ESAC); }
+<YYINITIAL>{NEW}                     { return new Symbol(TokenConstants.NEW); }
+<YYINITIAL>{OF}                      { return new Symbol(TokenConstants.OF); }
+<YYINITIAL>{NOT}                     { return new Symbol(TokenConstants.NOT); }
+<YYINITIAL>{CLASS}                   { return new Symbol(TokenConstants.CLASS); }
+<YYINITIAL>{TRUE}                    { return new Symbol(TokenConstants.BOOL_CONST, "true"); }
+<YYINITIAL>{FALSE}                   { return new Symbol(TokenConstants.BOOL_CONST, "false"); }
 
-<YYINITIAL>\*                              { return new Symbol(TokenConstants.MULT); }
-<YYINITIAL>\.                              { return new Symbol(TokenConstants.DOT); }
-<YYINITIAL>;                               { return new Symbol(TokenConstants.SEMI); }
-<YYINITIAL>\/                              { return new Symbol(TokenConstants.DIV); }
-<YYINITIAL>\+                              { return new Symbol(TokenConstants.PLUS); }
+<YYINITIAL>\*                        { return new Symbol(TokenConstants.MULT); }
+<YYINITIAL>\.                        { return new Symbol(TokenConstants.DOT); }
+<YYINITIAL>;                         { return new Symbol(TokenConstants.SEMI); }
+<YYINITIAL>\/                        { return new Symbol(TokenConstants.DIV); }
+<YYINITIAL>\+                        { return new Symbol(TokenConstants.PLUS); }
 
-<YYINITIAL>-                               { return new Symbol(TokenConstants.MINUS); }
-<YYINITIAL>~                               { return new Symbol(TokenConstants.NEG); }
-<YYINITIAL>\(                              { return new Symbol(TokenConstants.LPAREN); }
-<YYINITIAL>\)                              { return new Symbol(TokenConstants.RPAREN); }
-<YYINITIAL>\<                              { return new Symbol(TokenConstants.LT); }
-<YYINITIAL><=                              { return new Symbol(TokenConstants.LE); }
-<YYINITIAL>,                               { return new Symbol(TokenConstants.COMMA); }
-<YYINITIAL>=                               { return new Symbol(TokenConstants.EQ); }
-<YYINITIAL><-                              { return new Symbol(TokenConstants.ASSIGN); }
-<YYINITIAL>\:                              { return new Symbol(TokenConstants.COLON); }
-<YYINITIAL>\{                              { return new Symbol(TokenConstants.LBRACE); }
-<YYINITIAL>\}                              { return new Symbol(TokenConstants.RBRACE); }
-<YYINITIAL>@                               { return new Symbol(TokenConstants.AT); }
+<YYINITIAL>-                         { return new Symbol(TokenConstants.MINUS); }
+<YYINITIAL>~                         { return new Symbol(TokenConstants.NEG); }
+<YYINITIAL>\(                        { return new Symbol(TokenConstants.LPAREN); }
+<YYINITIAL>\)                        { return new Symbol(TokenConstants.RPAREN); }
+<YYINITIAL>\<                        { return new Symbol(TokenConstants.LT); }
+<YYINITIAL><=                        { return new Symbol(TokenConstants.LE); }
+<YYINITIAL>,                         { return new Symbol(TokenConstants.COMMA); }
+<YYINITIAL>=                         { return new Symbol(TokenConstants.EQ); }
+<YYINITIAL><-                        { return new Symbol(TokenConstants.ASSIGN); }
+<YYINITIAL>\:                        { return new Symbol(TokenConstants.COLON); }
+<YYINITIAL>\{                        { return new Symbol(TokenConstants.LBRACE); }
+<YYINITIAL>\}                        { return new Symbol(TokenConstants.RBRACE); }
+<YYINITIAL>@                         { return new Symbol(TokenConstants.AT); }
 
-<YYINITIAL>{TYPEID}                        { return new Symbol(TokenConstants.TYPEID,
-                                                 new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
-<YYINITIAL>{OBJECTID}                      { return new Symbol(TokenConstants.OBJECTID,
-                                                 new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
+<YYINITIAL>{TYPEID}                  { return new Symbol(TokenConstants.TYPEID,
+                                           new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
+<YYINITIAL>{OBJECTID}                { return new Symbol(TokenConstants.OBJECTID,
+                                           new IdSymbol(yytext(), yytext().length(), yytext().hashCode())); }
 
-<YYINITIAL>{STRINGBEGIN}                  { string_buf.setLength(0); yybegin(YYSTRING); }
-<YYSTRING>\x00                            { yybegin(YYSTRING_NULL_ERR);
-                                            return new Symbol(TokenConstants.ERROR, "String contains null character"); }
-<YYSTRING>\\b                             { string_buf.append("\b"); }
-<YYSTRING>\\f                             { string_buf.append("\f"); }
-<YYSTRING>\\t                             { string_buf.append("\t"); }
-<YYSTRING>\\\\n                           { string_buf.append("\\n"); }
-<YYSTRING>\\n                             { string_buf.append("\n"); }
-<YYSTRING>\\\n                            { string_buf.append("\n"); }
-<YYSTRING>\\\"                            { string_buf.append("\""); }
-<YYSTRING>\\\\                            { string_buf.append("\\"); }
-<YYSTRING>\\                              { ; }
-<YYSTRING>{STRINGCHARS}                   { string_buf.append(yytext()); }
-<YYSTRING>\n                              { string_buf.setLength(0);
-                                            yybegin(YYINITIAL);
-                                            return new Symbol(TokenConstants.ERROR, "Unterminated string constant"); }
+<YYINITIAL>{STRINGBEGIN}             { string_buf.setLength(0); yybegin(YYSTRING); }
+<YYSTRING>\x00                       { yybegin(YYSTRING_NULL_ERR);
+                                           return new Symbol(TokenConstants.ERROR, "String contains null character"); }
+<YYSTRING>\\b                        { string_buf.append("\b"); }
+<YYSTRING>\\f                        { string_buf.append("\f"); }
+<YYSTRING>\\t                        { string_buf.append("\t"); }
+<YYSTRING>\\\\n                      { string_buf.append("\\n"); }
+<YYSTRING>\\n                        { string_buf.append("\n"); }
+<YYSTRING>\\\n                       { string_buf.append("\n"); }
+<YYSTRING>\\\"                       { string_buf.append("\""); }
+<YYSTRING>\\\\                       { string_buf.append("\\"); }
+<YYSTRING>\\                         { ; }
+<YYSTRING>{STRINGCHARS}              { string_buf.append(yytext()); }
+<YYSTRING>\n                         { string_buf.setLength(0);
+                                           yybegin(YYINITIAL);
+                                           return new Symbol(TokenConstants.ERROR, "Unterminated string constant"); }
 
-<YYSTRING>{STRINGEND}                     { yybegin(YYINITIAL);
-                                            String s = string_buf.toString();
-                                            if(s.length() >= MAX_STR_CONST) {
-                                                  return new Symbol(TokenConstants.ERROR, "String constant too long");
-                                            } else {
-                                                  return new Symbol(TokenConstants.STR_CONST,
-                                                      new StringSymbol(s, s.length(), s.hashCode()));
-                                             } }
-<YYSTRING_NULL_ERR>\n                     { yybegin(YYINITIAL); }
-<YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
-<YYSTRING_NULL_ERR>.                      { ; }
-\n                                        { curr_lineno++; }
+<YYSTRING>{STRINGEND}               { yybegin(YYINITIAL);
+                                      String s = string_buf.toString();
+                                      if(s.length() >= MAX_STR_CONST) {
+                                            return new Symbol(TokenConstants.ERROR, "String constant too long");
+                                      } else {
+                                            return new Symbol(TokenConstants.STR_CONST,
+                                                new StringSymbol(s, s.length(), s.hashCode()));
+                                      }
+                                    }
+<YYSTRING_NULL_ERR>\n               { yybegin(YYINITIAL); }
+<YYSTRING_NULL_ERR>\"               { yybegin(YYINITIAL); }
+<YYSTRING_NULL_ERR>.                { ; }
+\n                                  { curr_lineno++; }
 
-<YYINITIAL>{DIGIT}+                       { return new Symbol(TokenConstants.INT_CONST,
-                                               new IntSymbol(yytext(), yytext().length(), yytext().hashCode())); }
-<YYINITIAL>"=>"                           { return new Symbol(TokenConstants.DARROW); }
+<YYINITIAL>{DIGIT}+                 { return new Symbol(TokenConstants.INT_CONST,
+                                         new IntSymbol(yytext(), yytext().length(), yytext().hashCode())); }
+<YYINITIAL>"=>"                     { return new Symbol(TokenConstants.DARROW); }
 
 
-<YYINITIAL>error                          { return new Symbol(TokenConstants.error); }
+<YYINITIAL>error                    { return new Symbol(TokenConstants.error); }
 
-.|\n                                      { return new Symbol(TokenConstants.ERROR, yytext()); }
+.|\n                                { return new Symbol(TokenConstants.ERROR, yytext()); }
