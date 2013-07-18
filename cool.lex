@@ -185,8 +185,9 @@ ANYCHAR      = .
                                                   return new Symbol(TokenConstants.STR_CONST,
                                                       new StringSymbol(s, s.length(), s.hashCode()));
                                              } }
-<YYSTRING_NULL_ERR>.                      { yybegin(YYINITIAL); }
+<YYSTRING_NULL_ERR>\n                     { yybegin(YYINITIAL); }
 <YYSTRING_NULL_ERR>\"                     { yybegin(YYINITIAL); }
+<YYSTRING_NULL_ERR>.                      { ; }
 \n                                        { curr_lineno++; }
 
 <YYINITIAL>{DIGIT}+                       { return new Symbol(TokenConstants.INT_CONST,
