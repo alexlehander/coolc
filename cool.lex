@@ -106,7 +106,7 @@ NOT          = [Nn][Oo][Tt]
 TRUE         = t[Rr][Uu][Ee]
 FALSE        = f[Aa][Ll][Ss][Ee]
 AT           = @
-ANYCHAR      = .
+ANYCHAR      = .|\r
 %%
 
 {COMMENTBEGIN}                             { yybegin(YYCOMMENT); commentDepth++;}
@@ -197,4 +197,4 @@ ANYCHAR      = .
 
 <YYINITIAL>error                          { return new Symbol(TokenConstants.error); }
 
-.                                         { return new Symbol(TokenConstants.ERROR, yytext()); }
+.|\n                                      { return new Symbol(TokenConstants.ERROR, yytext()); }
